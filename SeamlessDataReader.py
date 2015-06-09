@@ -1,11 +1,13 @@
-import csv
+import csv 
+from SimilarityFinder import edit_distance_dynamic, edit_distance_naive
 from collections import defaultdict
 
 columns = defaultdict(list) # each value in each column is appended to a list
-CategoryMap = {}
+CategoryCountMap = {}
 prev = {}
 for i in xrange(7): prev[i] = ""
-
+itemnames = []
+items = set()
 # Declaring array with words of interest to look out for in a in a category name
 beverages = ["beverage", "drink", "coffee", "juice", "tea"]
 
@@ -22,15 +24,38 @@ with open('import-io-seamless.csv') as f:
     	category = row["category"].lower()
     	if any(beverage in category for beverage in beverages):
 			if "stea" not in category: # eliminating steam and steak
-				if category not in CategoryMap:
-					CategoryMap[category] = 0
-				CategoryMap[category] += 1
+				if category not in CategoryCountMap:
+					CategoryCountMap[category] = 0
+				CategoryCountMap[category] += 1
+				for elem in row["item_name"].split(";")+row["item_name2"].split(";"):
+					items.add(elem)
+				# items.add(row["item_name"].split(";") + row["item_name"].split(";"))
+				itemnames += row["item_name"].split(";")
+				itemnames += row["item_name2"].split(";")
         		for (k,v) in row.items(): # go over each column name and value 
 					columns[k].append(v) # append the value into the appropriate list based on column name k
 
 
 
-SortedCategoryNames = sorted(CategoryMap, key=CategoryMap.get)
+# SortedCategoryNames = sorted(CategoryCountMap, key=CategoryCountMap.get)
 
-print CategoryMap
-print columns
+# print CategoryCountMap
+# print len(itemnames)
+# print len(items)
+while(True):
+	input_item = raw_input("Enter an Item Name:")
+	if input_item == "":
+		break
+	distances = {}
+	Recos = []
+	for item in items:
+		if input_item in item.lower():
+			Recos.append(item)
+		else:
+			ed = edit_distance_naive(item.lower(), input_item, len(item), len(input_item), int(len(input_item)/1.5))
+		# ed = EditDistanceDP(item.lower(), input_item)
+			distances[item] = ed
+
+	Recommendations = sorted(distances, key=distances.get)[:10]
+	print Recos
+	print Recommendations
