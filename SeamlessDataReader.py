@@ -5,7 +5,7 @@ from collections import defaultdict
 
 columns = defaultdict(list) # each value in each column is appended to a list
 CategoryCountMap = {}
-CuisineItems = {}
+CuisineDrinkItems = {}
 prev = {}
 for i in xrange(7): prev[i] = ""
 itemnames = []
@@ -16,6 +16,7 @@ beverages = ["beverage", "drink", "coffee", "juice", "tea"]
 with open('import-io-seamless.csv') as f:
     reader = csv.DictReader(f) # read rows into a dictionary format
     for row in reader: # read a row as {column1: value1, column2: value2,...}
+    	drink = False
     	keys = row.keys()
     	for i in xrange(7):
     		key = keys[i]
@@ -26,19 +27,24 @@ with open('import-io-seamless.csv') as f:
     	category = row["category"].lower()
     	if any(beverage in category for beverage in beverages):
 			if "stea" not in category: # eliminating steam and steak
+				drink = True
 				if category not in CategoryCountMap:
 					CategoryCountMap[category] = 0
 				CategoryCountMap[category] += 1
 				for elem in row["item_name"].split(";")+row["item_name2"].split(";"):
-					if row["cuisine"] not in CuisineItems:
-						CuisineItems[row["cuisine"]] = set()
-					CuisineItems[row["cuisine"]].add(elem)
+					if row["cuisine"] not in CuisineDrinkItems:
+						CuisineDrinkItems[row["cuisine"]] = set()
+					CuisineDrinkItems[row["cuisine"]].add(elem)
 					items.add(elem)
 				# items.add(row["item_name"].split(";") + row["item_name"].split(";"))
 				itemnames += row["item_name"].split(";")
 				itemnames += row["item_name2"].split(";")
         		for (k,v) in row.items(): # go over each column name and value 
 					columns[k].append(v) # append the value into the appropriate list based on column name k
+		if not drink:
+
+
+
 
 
 
@@ -57,7 +63,7 @@ while(True):
 		if input_item in item.lower():
 			Recos.append(item)
 		else:
-			ed = edit_distance_naive(item.lower(), input_item.lower(), len(item), len(input_item), int(len(input_item)/1.8))
+			ed = edit_distance_naive(item.lower(), input_item.lower(), len(item), len(input_item), 8)
 			# ed = EditDistanceDP(item.lower(), input_item)
 			# ed = distance(item.lower(), input_item)
 			distances[item] = ed
@@ -67,4 +73,4 @@ while(True):
 	print Recommendations
 
 
-# print CuisineItems
+# print CuisineDrinkItems
