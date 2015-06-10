@@ -46,8 +46,8 @@ with open('import-io-seamless.csv') as f:
 				for (k,v) in row.items(): # go over each column name and value 
 					columns[k].append(v) # append the value into the appropriate list based on column name k
 		if not drink:
-			for elem in row["item_name"].split(";")+row["item_name2"].split(";"):
-				NonDrinkItems += elem
+			for elem in row["item_name"].split(";") + row["item_name2"].split(";"):
+				NonDrinkItems.append(elem)
 
 
 
@@ -55,10 +55,28 @@ with open('import-io-seamless.csv') as f:
 
 
 # SortedCategoryNames = sorted(CategoryCountMap, key=CategoryCountMap.get)
-
+# print NonDrinkItems
 # print CategoryCountMap
+# print "\n\n\n"
+# print DrinkItems
 # print len(DrinkItems)
-# print len(items)
+# print len(NonDrinkItems)
+
+
+def classifyAsBeverage(input_item):
+	nonDrinkEd = 0
+	drinkEd = 0
+	for item in NonDrinkItems:
+		nonDrinkEd += edit_distance_naive(item.lower(), input_item.lower(), len(item), len(input_item), 8)
+	for item in DrinkItems:
+		drinkEd += edit_distance_naive(item.lower(), input_item.lower(), len(item), len(input_item), 8)
+
+	if float(drinkEd/len(DrinkItems)) < float(nonDrinkEd/len(NonDrinkItems)):
+		print "Beverage\n"
+	else:
+		print "Not Beverage\n"
+
+
 def getRecommendedNames():
 	while(True):
 		input_item = raw_input("Enter an Item Name:")
@@ -115,4 +133,12 @@ def pingWiki():
 	  	print item, wikipedia.search(item)
 		 
 
-# pingWiki()
+def commandLineCirculation():
+	while(True):
+		input_item = raw_input("Enter an Item Name:")
+		if input_item == "":
+			break
+		classifyAsBeverage(input_item)
+
+
+commandLineCirculation()
