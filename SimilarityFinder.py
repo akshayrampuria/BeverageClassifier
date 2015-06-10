@@ -30,7 +30,7 @@ def edit_distance_dynamic(s1, s2, l1, l2, Max):
 	if s1[0] == s2[0]:
 		return edit_distance_naive(s1[1:], s2[1:], l1-1, l2-1, Max)
 	else:
-		if Max == 0: return 1
+		if Max == 0: return 100
 
 		ed1 = edit_distance_naive(s1[1:], s2, l1-1, l2, Max-1)
 		ed2 = edit_distance_naive(s1, s2[1:], l1, l2-1, Max-1)
