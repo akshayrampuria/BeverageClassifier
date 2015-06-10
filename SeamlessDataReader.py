@@ -1,9 +1,11 @@
 import csv 
 from SimilarityFinder import edit_distance_dynamic, edit_distance_naive
+# from python-Levenshtein import distance
 from collections import defaultdict
 
 columns = defaultdict(list) # each value in each column is appended to a list
 CategoryCountMap = {}
+CuisineItems = {}
 prev = {}
 for i in xrange(7): prev[i] = ""
 itemnames = []
@@ -28,6 +30,9 @@ with open('import-io-seamless.csv') as f:
 					CategoryCountMap[category] = 0
 				CategoryCountMap[category] += 1
 				for elem in row["item_name"].split(";")+row["item_name2"].split(";"):
+					if row["cuisine"] not in CuisineItems:
+						CuisineItems[row["cuisine"]] = set()
+					CuisineItems[row["cuisine"]].add(elem)
 					items.add(elem)
 				# items.add(row["item_name"].split(";") + row["item_name"].split(";"))
 				itemnames += row["item_name"].split(";")
@@ -52,10 +57,14 @@ while(True):
 		if input_item in item.lower():
 			Recos.append(item)
 		else:
-			ed = edit_distance_naive(item.lower(), input_item, len(item), len(input_item), int(len(input_item)/1.5))
-		# ed = EditDistanceDP(item.lower(), input_item)
+			ed = edit_distance_naive(item.lower(), input_item.lower(), len(item), len(input_item), int(len(input_item)/1.8))
+			# ed = EditDistanceDP(item.lower(), input_item)
+			# ed = distance(item.lower(), input_item)
 			distances[item] = ed
 
 	Recommendations = sorted(distances, key=distances.get)[:10]
 	print Recos
 	print Recommendations
+
+
+# print CuisineItems
