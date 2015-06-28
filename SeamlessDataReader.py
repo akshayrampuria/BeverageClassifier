@@ -183,19 +183,19 @@ class DataReader:
 					summary += p.summary
 				self.drinkCorpus.append(summary)
 
-		self.nonDrinkCorpus = []
-		for nonDrink in self.setOfNonDrinkItems:
-			item = nonDrink.strip()
-			if item:
-				pages = wikipedia.search(item + " drink")
-				summary = ""
-				for page in pages:
-					p = wikipedia.page(page)
-					summary += p.summary
-				self.nonDrinkCorpus.append(summary)
+		# self.nonDrinkCorpus = []
+		# for nonDrink in self.setOfNonDrinkItems:
+		# 	item = nonDrink.strip()
+		# 	if item:
+		# 		pages = wikipedia.search(item + " drink")
+		# 		summary = ""
+		# 		for page in pages:
+		# 			p = wikipedia.page(page)
+		# 			summary += p.summary
+		# 		self.nonDrinkCorpus.append(summary)
 
 		pickle.dump(self.drinkCorpus, self.drinkCorpusFile)
-		pickle.dump(self.nonDrinkCorpus, self.nonDrinkCorpusFile)
+		# pickle.dump(self.nonDrinkCorpus, self.nonDrinkCorpusFile)
 
 	def getWikiCorpus(self):
 		self.drinkCorpus = pickle.load(self.drinkCorpusFile)
